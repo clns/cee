@@ -8,9 +8,7 @@
     "example": "example"
   },
   "dependencies": {
-    "googlediff": "^0.1.0",
-    "lodash": "^4.6.1",
-    "prismjs": "^1.4.1"
+    "googlediff": "^0.1.0"
   },
   "devDependencies": {
     "babel-core": "^6.7.2",

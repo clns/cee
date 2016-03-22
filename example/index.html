@@ -6,8 +6,29 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
 
     <!--<link rel="stylesheet" href="editor.css">-->
-
-    <!--<script src="editor.js"></script>-->
+    <style type="text/css">
+        .scroller {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            overflow: auto;
+        }
+        .content {
+            font-size: 18px;
+            width: 800px;
+            margin: 0 auto;
+            padding: 50px 100px 200px;
+            font-family: Helvetica, sans-serif;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: normal;
+        }
+        pre:focus {
+            outline: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -134,20 +155,34 @@ By including colons within the header row, you can define text to be left-aligne
 </div>
 
 <script src="../node_modules/googlediff/javascript/diff_match_patch_uncompressed.js"></script>
-<script src="../node_modules/prismjs/components/prism-core.js"></script>
-<script src="../node_modules/lodash/core.js"></script>
+<script src="https://cdn.jsdelivr.net/lodash/4.6.1/lodash.min.js"></script>
 <script src="../lib/core.js"></script>
-<script src="../lib/utils.js"></script>
 <script src="../lib/highlighter.js"></script>
+<script src="../lib/keystroke.js"></script>
+<script src="../lib/marker.js"></script>
+<script src="../lib/selectionMgr.js"></script>
+<script src="../lib/undoMgr.js"></script>
+<script src="../lib/utils.js"></script>
 <script src="../lib/watcher.js"></script>
 <script>
-    var editor = window.cee(
+    var editor = window.ed = window.cee(
             document.querySelector('.content'),
             // Optional (pass a second arg if scrollbar is not on the first arg)
             document.querySelector('.scroller')
     )
     console.log('initializing', editor)
-    editor.init();
+    editor.init({
+        // Optional (increases performance on large documents)
+        sectionParser: function(text) {
+            var offset = 0, sectionList = []
+                ;(text + '\n\n').replace(/^.+[ \t]*\n=+[ \t]*\n+|^.+[ \t]*\n-+[ \t]*\n+|^\#{1,6}[ \t]*.+?[ \t]*\#*\n+/gm, function(match, matchOffset) {
+                sectionList.push(text.substring(offset, matchOffset))
+                offset = matchOffset
+            })
+            sectionList.push(text.substring(offset))
+            return sectionList
+        }
+    });
 </script>
 
 </body>
